@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!--头部-->
-    <the-header></the-header>
+    <the-header :seller="seller"></the-header>
     <!--tab-->
     <div class="tab">
       <div class="tab-item">
@@ -28,15 +28,31 @@
 <script>
   import TheHeader from 'components/TheHeader'
 
+  const ERR_OK = 0
+
   export default {
     data () {
       return {
-        goods: {}
+        goods: {},
+        seller: {}
       }
     },
     created () {
-      this.$http.get('api/goods').then((res) => {
-        console.log(res)
+      this.$http.get('/api/goods').then((res) => {
+        if (res.body.errno === ERR_OK) {
+          this.goods = res.body.data
+        } else {
+          console.log('App.vue:', '获取数据异常')
+        }
+      }, (err) => {
+        console.log(err)
+      })
+      this.$http.get('/api/seller').then((res) => {
+        if (res.body.errno === ERR_OK) {
+          this.seller = res.body.data
+        } else {
+          console.log('App.vue:', '获取数据异常')
+        }
       }, (err) => {
         console.log(err)
       })
