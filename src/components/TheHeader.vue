@@ -13,20 +13,23 @@
           {{seller.description}}/{{seller.deliveryTime}}分钟送达
         </div>
         <div class="supports" v-if="seller.supports">
-          <span class="icon"></span>
+          <span class="icon" :class="iconClassMap[seller.supports[0].type]"></span>
           <span class="description">{{seller.supports[0].description}}</span>
-          <div class="num">
-            {{seller.supports.length}}个
-            <span class="icon-keyboard_arrow_right"></span>
-          </div>
-          <!--<div class="support-item" v-for="item in seller.supports" v-bind:key="item.type">-->
-          <!---->
-          <!--</div>-->
         </div>
       </div>
+      <div v-if="seller.supports" class="support-count">
+        <span class="count">{{seller.supports.length}}个</span>
+        <span class="icon-keyboard_arrow_right"></span>
+      </div>
     </div>
-    <div class="bulletin-wrapper"></div>
-
+    <div class="bulletin-wrapper">
+      <span class="icon"></span>
+      <span class="text">{{seller.bulletin}}</span>
+      <span class="icon-keyboard_arrow_right"></span>
+    </div>
+    <div class="bg">
+      <img :src="seller.avatar" width="100%" height="100%">
+    </div>
   </div>
 </template>
 
@@ -36,20 +39,27 @@
     props: {
       goods: Object,
       seller: Object
+    },
+    created () {
+      this.iconClassMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     }
   }
 </script>
 <style scoped lang="scss">
   @import '../common/styles/base';
+  @import "../common/styles/font";
 
   .header {
-    background: rgba(7, 17, 27, 0.5);
     color: #fff;
+    position: relative;
+    background-color: rgba(7, 17, 27, 0.5);
     .content-wrapper {
+      position: relative;
       padding: 24px 12px 18px 24px;
       font-size: 0;
       .avatar {
         display: inline-block;
+        vertical-align: top;
         img {
           border-radius: 2px;
         }
@@ -60,12 +70,11 @@
         font-size: 14px;
         .title {
           margin: 2px 6px 8px 0;
-          display: flex;
-          flex-direction: row;
           .brand {
             width: 30px;
             height: 18px;
             display: inline-block;
+            vertical-align: top;
             @include bg-image('brand');
             background-size: 100% 100%;
           }
@@ -87,14 +96,28 @@
         }
         .supports {
           display: flex;
-          flex-direction: row;
-          background: red;
+          padding-bottom: 2px;
           .icon {
             display: inline-block;
             width: 12px;
             height: 12px;
-            @include bg-image('decrease_1');
             background-size: 100% 100%;
+            vertical-align: top;
+            &.decrease {
+              @include bg-image('decrease_1');
+            }
+            &.discount {
+              @include bg-image('discount_1');
+            }
+            &.guarantee {
+              @include bg-image('guarantee_1');
+            }
+            &.invoice {
+              @include bg-image('invoice_1');
+            }
+            &.special {
+              @include bg-image('special_1');
+            }
           }
           .description {
             display: inline-block;
@@ -104,22 +127,76 @@
             line-height: 12px;
             margin-left: 4px;
           }
-          .num {
-            display: inline-block;
-            flex: 1;
-            align-self: flex-end;
-            font-size: 10px;
-            font-weight: 200;
-            line-height: 12px;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.2);
-            height: 24px;
-            border-radius: 7px;
-            padding: 7px 8px;
-            margin-top: -10px;
-          }
         }
       }
+      .support-count {
+        position: absolute;
+        right: 12px;
+        bottom: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        color: #fff;
+        font-size: 10px;
+        vertical-align: middle;
+        padding: 10px 12px;
+        .count {
+          line-height: 12px;
+          vertical-align: text-bottom;
+          padding-left: 4px;
+        }
+        .icon-keyboard_arrow_right {
+          margin-left: 2px;
+          vertical-align: middle;
+          padding-right: 8px;
+          line-height: 12px;
+        }
+      }
+    }
+    .bulletin-wrapper {
+      background: rgba(7, 17, 27, 0.2);
+      height: 28px;
+      vertical-align: middle;
+      display: flex;
+      display: -webkit-flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 0;
+      .icon {
+        flex: 0.15;
+        width: 22px;
+        height: 12px;
+        @include bg-image('bulletin');
+        vertical-align: top;
+        background-size: 22px 12px;
+        background-repeat: no-repeat;
+      }
+      .text {
+        flex: 2;
+        margin-left: 4px;
+        font-size: 10px;
+        height: 28px;
+        line-height: 28px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-text-overflow: ellipsis;
+        -moz-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .icon-keyboard_arrow_right {
+        flex: 0.05;
+        font-size: 10px;
+      }
+    }
+    .bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      filter: blur(10px);
     }
   }
 

@@ -74,7 +74,7 @@
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 40px;
     .tab-item {
       flex: 1;
       align-self: center;
@@ -84,8 +84,8 @@
       align-items: center;
       @include border-1px(rgba(7, 17, 27, 0.1));
       & > a {
-        font-size: 28px;
-        line-height: 28px;
+        font-size: 14px;
+        line-height: 14px;
         text-underline: none;
         color: rgb(77, 85, 93);
         display: block;
