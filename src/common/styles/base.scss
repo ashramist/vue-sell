@@ -29,3 +29,58 @@
     background-image: url('../assets/@3x/'+ $url + '@3x.png');
   }
 }
+
+.clear-fix {
+  &:after {
+    display: block;
+    content: '.';
+    height: 0;
+    line-height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}
+
+@mixin star($size,$marginRight,$starType) {
+  width: $size;
+  height: $size;
+  margin-right: $marginRight;
+  background-size: $size $size;
+  &:last-child {
+    margin-right: 0;
+  }
+  &.on {
+    @include bg-image('star'+$starType+'_on')
+  }
+  &.off {
+    @include bg-image('star'+$starType+'_off')
+  }
+  &.half {
+    @include bg-image('star'+$starType+'_half')
+  }
+}
+
+@mixin support-icon($size) {
+  .icon {
+    display: inline-block;
+    width: $size;
+    height: $size;
+    background-size: 100% 100%;
+    vertical-align: top;
+    &.decrease {
+      @include bg-image('decrease_1');
+    }
+    &.discount {
+      @include bg-image('discount_1');
+    }
+    &.guarantee {
+      @include bg-image('guarantee_1');
+    }
+    &.invoice {
+      @include bg-image('invoice_1');
+    }
+    &.special {
+      @include bg-image('special_1');
+    }
+  }
+}

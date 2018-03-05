@@ -17,12 +17,12 @@
           <span class="description">{{seller.supports[0].description}}</span>
         </div>
       </div>
-      <div v-if="seller.supports" class="support-count">
+      <div v-if="seller.supports" class="support-count" v-on:click="showMask">
         <span class="count">{{seller.supports.length}}个</span>
         <span class="icon-keyboard_arrow_right"></span>
       </div>
     </div>
-    <div class="bulletin-wrapper">
+    <div class="bulletin-wrapper" v-on:click="showMask">
       <span class="icon"></span>
       <span class="text">{{seller.bulletin}}</span>
       <span class="icon-keyboard_arrow_right"></span>
@@ -30,15 +30,65 @@
     <div class="bg">
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
+    <div class="mask" v-show="maskShow">
+      <div class="mask-wrapper clear-fix">
+        <div class="mask-main">
+          <span class="name">{{seller.name}}</span>
+          <div class="star-wrapper">
+            <Star :size="48" :score="seller.score"></Star>
+          </div>
+          <div class="title-wrapper" v-if="seller.supports">
+            <div class="line "></div>
+            <div class="title">优惠信息</div>
+            <div class="line "></div>
+          </div>
+          <div class="support-wrapper">
+            <div class="support-item" v-for="support in seller.supports" :key="support.type">
+              <span class="icon" :class="iconClassMap[support.type]"></span>
+              <span class="description">{{support.description}}</span>
+            </div>
+          </div>
+          <div class="title-wrapper" v-if="seller.supports">
+            <div class="line"></div>
+            <div class="title">商家公告</div>
+            <div class="line"></div>
+          </div>
+          <div class="brand-wrapper">
+            {{seller.bulletin}}
+          </div>
+        </div>
+      </div>
+      <div class="mask-close" @click="hideMask">
+        <span class="icon-close"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import Star from './Star'
+
   export default {
     name: 'the-header',
+    components: {
+      Star: Star
+    },
     props: {
       goods: Object,
       seller: Object
+    },
+    data () {
+      return {
+        maskShow: false
+      }
+    },
+    methods: {
+      showMask () {
+        this.maskShow = true
+      },
+      hideMask () {
+        this.maskShow = false
+      }
     },
     created () {
       this.iconClassMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
@@ -52,6 +102,7 @@
   .header {
     color: #fff;
     position: relative;
+    overflow: hidden;
     background-color: rgba(7, 17, 27, 0.5);
     .content-wrapper {
       position: relative;
@@ -97,28 +148,7 @@
         .supports {
           display: flex;
           padding-bottom: 2px;
-          .icon {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background-size: 100% 100%;
-            vertical-align: top;
-            &.decrease {
-              @include bg-image('decrease_1');
-            }
-            &.discount {
-              @include bg-image('discount_1');
-            }
-            &.guarantee {
-              @include bg-image('guarantee_1');
-            }
-            &.invoice {
-              @include bg-image('invoice_1');
-            }
-            &.special {
-              @include bg-image('special_1');
-            }
-          }
+          @include support-icon($size: 12px);
           .description {
             display: inline-block;
             font-size: 10px;
@@ -197,6 +227,89 @@
       width: 100%;
       height: 100%;
       filter: blur(10px);
+    }
+    .mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 17, 27, 0.8);
+      z-index: 100;
+      .mask-wrapper {
+        min-height: 100%;
+        width: 100%;
+        text-align: center;
+        .mask-main {
+          margin-top: 64px;
+          padding-bottom: 64px;
+          .name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 16px;
+          }
+          .star-wrapper {
+            margin-top: 16px;
+            margin-bottom: 28px;
+          }
+          .title-wrapper {
+            display: flex;
+            width: 80%;
+            margin: 28px auto 24px auto;
+            .line {
+              flex: 1;
+              position: relative;
+              top: -6px;
+              border-bottom: 1px solid rgba(255, 255, 255, .2)
+            }
+            .title {
+              flex: 1;
+              font-size: 14px;
+              font-weight: 700;
+              line-height: 14px;
+              color: #fff;
+              padding: 0 12px;
+            }
+          }
+          .support-wrapper {
+            margin: 24px 48px 28px 48px;
+            .support-item {
+              margin: 0 auto 12px auto;
+              text-align: start;
+              display: flex;
+              padding-bottom: 2px;
+              @include support-icon($size: 16px);
+              .description {
+                font-size: 12px;
+                line-height: 16px;
+                font-weight: 200;
+                margin-left: 6px;
+                vertical-align: middle;
+              }
+            }
+          }
+          .brand-wrapper {
+            margin: 24px 48px 28px 48px;
+            text-align: start;
+            font-size: 12px;
+            font-weight: 200;
+            line-height: 24px;
+            color: rgb(255, 255, 255);
+          }
+        }
+
+      }
+      .mask-close {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        margin: -128px auto 0 auto;
+        clear: both;
+        font-size: 32px;
+        color: rgba(255, 255, 255, .5)
+      }
     }
   }
 
