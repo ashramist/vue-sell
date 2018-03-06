@@ -6,7 +6,16 @@
         <span class="description">{{menuItem.name}}</span>
       </span>
     </div>
-    <div class="food-wrapper"></div>
+    <div class="food-wrapper">
+      <div class="food-list" v-for="item in goods" v-bind:key="item.name">
+        <div class="food-title">{{item.name}}</div>
+        <div v-for="goodItem in item.foods" v-bind:key="goodItem.name">
+          <div>{{goodItem.name}}</div>
+          <div>{{goodItem.price}}</div>
+          <img :src="goodItem.icon"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,6 +92,18 @@
     }
     .food-wrapper {
       flex: 1;
+      overflow: auto;
+      .food-list {
+        .food-title {
+          background: #f3f5f7;
+          border-left: 2px solid #d9dde1;
+          height: 28px;
+          padding-left: 14px;
+          font-size: 12px;
+          color: rgb(147, 153, 159);
+          line-height: 28px;
+        }
+      }
 
     }
   }
