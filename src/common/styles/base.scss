@@ -67,6 +67,7 @@
     height: $size;
     background-size: 100% 100%;
     vertical-align: top;
+    background-repeat: no-repeat;
     &.decrease {
       @include bg-image('decrease_1');
     }
@@ -83,4 +84,29 @@
       @include bg-image('special_1');
     }
   }
+}
+
+@mixin menu-item-icon($size) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  background-size: $size $size;
+  vertical-align: top;
+  background-repeat: no-repeat;
+  &.decrease {
+    @include bg-image('decrease_3');
+  }
+  &.discount {
+    @include bg-image('discount_3');
+  }
+  &.guarantee {
+    @include bg-image('guarantee_3');
+  }
+  &.invoice {
+    @include bg-image('invoice_3');
+  }
+  &.special {
+    @include bg-image('special_3');
+  }
+
 }

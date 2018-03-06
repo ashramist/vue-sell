@@ -16,11 +16,11 @@
     </div>
     <!--内容区域-->
     <div class="content">
-      <router-view></router-view>
+      <router-view :goods="goods"></router-view>
     </div>
     <!--尾部-->
     <div class="footer">
-      footer
+      <!--footer-->
     </div>
   </div>
 </template>

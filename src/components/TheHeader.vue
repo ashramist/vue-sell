@@ -30,38 +30,40 @@
     <div class="bg">
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
-    <div class="mask" v-show="maskShow">
-      <div class="mask-wrapper clear-fix">
-        <div class="mask-main">
-          <span class="name">{{seller.name}}</span>
-          <div class="star-wrapper">
-            <Star :size="48" :score="seller.score"></Star>
-          </div>
-          <div class="title-wrapper" v-if="seller.supports">
-            <div class="line "></div>
-            <div class="title">优惠信息</div>
-            <div class="line "></div>
-          </div>
-          <div class="support-wrapper">
-            <div class="support-item" v-for="support in seller.supports" :key="support.type">
-              <span class="icon" :class="iconClassMap[support.type]"></span>
-              <span class="description">{{support.description}}</span>
+    <transition name="fade">
+      <div class="mask" v-show="maskShow">
+        <div class="mask-wrapper clear-fix">
+          <div class="mask-main">
+            <span class="name">{{seller.name}}</span>
+            <div class="star-wrapper">
+              <Star :size="48" :score="seller.score"></Star>
+            </div>
+            <div class="title-wrapper" v-if="seller.supports">
+              <div class="line "></div>
+              <div class="title">优惠信息</div>
+              <div class="line "></div>
+            </div>
+            <div class="support-wrapper">
+              <div class="support-item" v-for="support in seller.supports" :key="support.type">
+                <span class="icon" :class="iconClassMap[support.type]"></span>
+                <span class="description">{{support.description}}</span>
+              </div>
+            </div>
+            <div class="title-wrapper" v-if="seller.supports">
+              <div class="line"></div>
+              <div class="title">商家公告</div>
+              <div class="line"></div>
+            </div>
+            <div class="brand-wrapper">
+              {{seller.bulletin}}
             </div>
           </div>
-          <div class="title-wrapper" v-if="seller.supports">
-            <div class="line"></div>
-            <div class="title">商家公告</div>
-            <div class="line"></div>
-          </div>
-          <div class="brand-wrapper">
-            {{seller.bulletin}}
-          </div>
+        </div>
+        <div class="mask-close" @click="hideMask">
+          <span class="icon-close"></span>
         </div>
       </div>
-      <div class="mask-close" @click="hideMask">
-        <span class="icon-close"></span>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -235,8 +237,9 @@
       overflow: auto;
       width: 100%;
       height: 100%;
-      background: rgba(7, 17, 27, 0.8);
       z-index: 100;
+      background: rgba(7, 17, 27, 0.8);
+      -webkit-backdrop-filter: blur(10px);
       .mask-wrapper {
         min-height: 100%;
         width: 100%;
@@ -299,7 +302,6 @@
             color: rgb(255, 255, 255);
           }
         }
-
       }
       .mask-close {
         position: relative;
@@ -311,6 +313,15 @@
         color: rgba(255, 255, 255, .5)
       }
     }
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+    background: rgba(7, 17, 27, 0);
   }
 
 </style>
