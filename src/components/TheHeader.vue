@@ -307,7 +307,7 @@
         position: relative;
         width: 32px;
         height: 32px;
-        margin: -128px auto 0 auto;
+        margin: -64px auto 0 auto;
         clear: both;
         font-size: 32px;
         color: rgba(255, 255, 255, .5)
