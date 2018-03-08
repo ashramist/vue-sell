@@ -1,14 +1,16 @@
 <template>
   <div class="goods">
-    <div class="menu-wrapper">
-      <span v-for="menuItem in goods" v-bind:key="menuItem.name" class="menu-item">
+    <ul class="menu-wrapper" ref="menuWrapper">
+      <li v-for="(menuItem , index) in goods" @click="selectMenu(index,$event)" v-bind:key="menuItem.name"
+          class="menu-item"
+          :class="{'active':currentIndex === index}">
         <span v-if="menuItem.type > 0" class="icon" :class="iconClassMap[menuItem.type]"></span>
         <span class="description">{{menuItem.name}}</span>
-      </span>
-    </div>
-    <div class="food-wrapper">
+      </li>
+    </ul>
+    <div class="food-wrapper" ref="foodWrapper">
       <ul>
-        <li class="food-list" v-for="item in goods" v-bind:key="item.name">
+        <li class="food-list food-list-hook" v-for="item in goods" v-bind:key="item.name">
           <div class="title">{{item.name}}</div>
           <ul class="food-detail-list">
             <li class="food-item" v-for="foodItem in item.foods" v-bind:key="foodItem.name">
@@ -34,6 +36,8 @@
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
+
   const ERR_OK = 0
   export default {
     name: 'goods',
@@ -45,7 +49,30 @@
     data () {
       return {
         goods: {},
-        iconClassMap: []
+        iconClassMap: [],
+        foodItemsHeight: [],
+        scrollY: 0
+      }
+    },
+    computed: {
+      currentIndex () {
+        let i = 0
+        let length = this.foodItemsHeight.length
+        console.log('scrollY:59', this.scrollY)
+        if (i) {
+          console.log('i 63', i)
+        }
+        for (i; i < length; i++) {
+          let h1 = this.foodItemsHeight[i]
+          let h2 = this.foodItemsHeight[i + 1]
+          console.log('i 69', i)
+          console.log(h2)
+          console.log(h1)
+          if (h2 || (this.scrollY >= h1 && this.scrollY < h2)) {
+            return i
+          }
+        }
+        return 0
       }
     },
     created () {
@@ -53,12 +80,43 @@
       this.$http.get('/api/goods').then((res) => {
         if (res.body.errno === ERR_OK) {
           this.goods = res.body.data
+          this.$nextTick(() => {
+            this._initScroll()
+            this._calculateHeight()
+          })
         } else {
           console.log('App.vue:', '获取数据异常')
         }
       }, (err) => {
         console.log(err)
       })
+    },
+    methods: {
+      _initScroll () {
+        this.menuScorll = new BScroll(this.$refs.menuWrapper, {click: true})
+        this.foodScorll = new BScroll(this.$refs.foodWrapper, {probeType: 3, click: true})
+        this.foodScorll.on('scroll', (pos) => {
+          this.scrollY = Math.abs(Math.round(pos.y))
+        })
+      },
+      _calculateHeight () {
+        let foodItems = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
+        let height = 0
+        this.foodItemsHeight.push(height)
+        for (let item of foodItems) {
+          height += item.clientHeight
+          this.foodItemsHeight.push(height)
+        }
+        return this.foodItemsHeight
+      },
+      selectMenu (index, event) {
+        if (!event._constructed) {
+          return
+        }
+        let foodItems = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
+        let element = foodItems[index]
+        this.foodScorll.scrollToElement(element, 300)
+      }
     }
   }
 </script>
@@ -81,15 +139,21 @@
       background: #f3f5f7;
       display: flex;
       flex-direction: column;
-      overflow: auto;
       .menu-item {
         height: 54px;
-        width: 56px;
-        margin: 0 12px;
+        padding: 0 12px;
         display: flex;
-        justify-content: start;
+        justify-content: center;
         align-items: center;
         border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+        &.active {
+          position: relative;
+          z-index: 10;
+          background: #fff;
+          margin-top: -1px;
+          font-weight: 700;
+          border: none;
+        }
         .icon {
           @include menu-item-icon($size: 16px);
           flex: 0.5;
@@ -107,12 +171,12 @@
           display: -webkit-box;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 2;
+
         }
       }
     }
     .food-wrapper {
       flex: 1;
-      overflow: auto;
       .food-list {
         .title {
           background: #f3f5f7;
