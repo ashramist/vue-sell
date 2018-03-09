@@ -13,7 +13,8 @@
   "dependencies": {
     "vue": "^2.5.2",
     "vue-resource": "^1.4.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "better-scorll": "^1.8.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

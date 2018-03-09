@@ -1,9 +1,9 @@
 <template>
   <div class="goods">
     <ul class="menu-wrapper" ref="menuWrapper">
-      <li v-for="(menuItem , index) in goods" @click="selectMenu(index,$event)" v-bind:key="menuItem.name"
-          class="menu-item"
-          :class="{'active':currentIndex === index}">
+      <li v-for="(menuItem , index) in goods" class="menu-item" :class="{'active':currentIndex === index}"
+          @click="selectMenu(index,$event)" :key="menuItem.name"
+          ref="menuList">
         <span v-if="menuItem.type > 0" class="icon" :class="iconClassMap[menuItem.type]"></span>
         <span class="description">{{menuItem.name}}</span>
       </li>
@@ -48,7 +48,7 @@
     },
     data () {
       return {
-        goods: {},
+        goods: [],
         iconClassMap: [],
         foodItemsHeight: [],
         scrollY: 0
@@ -56,19 +56,12 @@
     },
     computed: {
       currentIndex () {
-        let i = 0
-        let length = this.foodItemsHeight.length
-        console.log('scrollY:59', this.scrollY)
-        if (i) {
-          console.log('i 63', i)
-        }
-        for (i; i < length; i++) {
+        for (let i = 0; i < this.foodItemsHeight.length; i++) {
+          console.log(i)
           let h1 = this.foodItemsHeight[i]
           let h2 = this.foodItemsHeight[i + 1]
-          console.log('i 69', i)
-          console.log(h2)
-          console.log(h1)
-          if (h2 || (this.scrollY >= h1 && this.scrollY < h2)) {
+          if (!h2 || (this.scrollY >= h1 && this.scrollY < h2)) {
+            this._followScroll(i)
             return i
           }
         }
@@ -96,7 +89,9 @@
         this.menuScorll = new BScroll(this.$refs.menuWrapper, {click: true})
         this.foodScorll = new BScroll(this.$refs.foodWrapper, {probeType: 3, click: true})
         this.foodScorll.on('scroll', (pos) => {
-          this.scrollY = Math.abs(Math.round(pos.y))
+          if (pos.y <= 0) {
+            this.scrollY = Math.abs(Math.round(pos.y))
+          }
         })
       },
       _calculateHeight () {
@@ -107,7 +102,11 @@
           height += item.clientHeight
           this.foodItemsHeight.push(height)
         }
-        return this.foodItemsHeight
+      },
+      _followScroll (index) {
+        let menuList = this.$refs.menuList
+        let el = menuList[index]
+        this.menuScorll.scrollToElement(el, 300, 0, -100)
       },
       selectMenu (index, event) {
         if (!event._constructed) {
@@ -239,5 +238,4 @@
 
     }
   }
-
 </style>

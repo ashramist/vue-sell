@@ -16,7 +16,7 @@
     </div>
     <!--内容区域-->
     <div class="content">
-      <router-view :goods="goods"></router-view>
+      <router-view :seller="seller"></router-view>
     </div>
     <!--尾部-->
     <div class="footer">
@@ -38,15 +38,6 @@
       }
     },
     created () {
-      this.$http.get('/api/goods').then((res) => {
-        if (res.body.errno === ERR_OK) {
-          this.goods = res.body.data
-        } else {
-          console.log('App.vue:', '获取数据异常')
-        }
-      }, (err) => {
-        console.log(err)
-      })
       this.$http.get('/api/seller').then((res) => {
         if (res.body.errno === ERR_OK) {
           this.seller = res.body.data
