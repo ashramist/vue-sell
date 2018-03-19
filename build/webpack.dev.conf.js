@@ -9,16 +9,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
-/**
- * 数据请求路由 mock 数据部分
- * @type {createApplication}
- */
-const express = require('express')
-const app = express()
-const appData = require('../data.json')
-const seller = appData.seller
-const goods = appData.goods
-const ratings = appData.ratings
+const app = require('express')()
+const serverData = require('../data')
+const seller = serverData.seller
+const goods = serverData.goods
+const ratings = serverData.ratings
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)

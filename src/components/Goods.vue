@@ -21,12 +21,16 @@
                 <div class="name">{{foodItem.name}}</div>
                 <div class="description">{{foodItem.description}}</div>
                 <div class="sell-detail">月售{{foodItem.sellCount}}份&nbsp;&nbsp;好评率{{foodItem.rating}}%</div>
-                <div class="price-detail">
-                  <span class="price">￥{{foodItem.price}}</span>
-                  <span class="old-price" v-show="foodItem.oldPrice">￥{{foodItem.oldPrice}}</span>
+                <div class="other-detail-wrapper">
+                  <div class="price-detail">
+                    <span class="price">￥{{foodItem.price}}</span>
+                    <span class="old-price" v-show="foodItem.oldPrice">￥{{foodItem.oldPrice}}</span>
+                  </div>
+                  <div class="add-cart-wrapper">
+                    <cart-controller></cart-controller>
+                  </div>
                 </div>
               </div>
-              <div class="cart-wrapper"></div>
             </li>
           </ul>
         </li>
@@ -37,6 +41,7 @@
 
 <script>
   import BScroll from 'better-scroll'
+  import CartController from './CartController'
 
   const ERR_OK = 0
   export default {
@@ -45,6 +50,9 @@
       seller: {
         type: Object
       }
+    },
+    components: {
+      'cart-controller': CartController
     },
     data () {
       return {
@@ -70,21 +78,27 @@
     },
     created () {
       this.iconClassMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+
       this.$http.get('/api/goods').then((res) => {
-        if (res.body.errno === ERR_OK) {
-          this.goods = res.body.data
-          this.$nextTick(() => {
-            this._initScroll()
-            this._calculateHeight()
-          })
-        } else {
-          console.log('App.vue:', '获取数据异常')
+          if (res.body.errno === ERR_OK) {
+            this.goods = res.body.data
+            this.$nextTick(() => {
+              this._initScroll()
+              this._calculateHeight()
+            })
+          } else {
+            console.log('App.vue:', '获取数据异常')
+          }
+        }, (err) => {
+          console.log(err)
         }
-      }, (err) => {
-        console.log(err)
-      })
+      )
     },
     methods: {
+      /**
+       * 初始化滚动轴
+       * @private
+       */
       _initScroll () {
         this.menuScorll = new BScroll(this.$refs.menuWrapper, {click: true})
         this.foodScorll = new BScroll(this.$refs.foodWrapper, {probeType: 3, click: true})
@@ -94,7 +108,12 @@
           }
         })
       },
+      /**
+       * 计算食品列表各个分区高度
+       * @private
+       */
       _calculateHeight () {
+        // 通过ref属性，获取dom对象
         let foodItems = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
         let height = 0
         this.foodItemsHeight.push(height)
@@ -108,6 +127,11 @@
         let el = menuList[index]
         this.menuScorll.scrollToElement(el, 300, 0, -100)
       },
+      /**
+       * 点击菜单滑动到指定位置
+       * @param index 菜单索引
+       * @param event 事件对象
+       */
       selectMenu (index, event) {
         if (!event._constructed) {
           return
@@ -118,6 +142,7 @@
       }
     }
   }
+
 </script>
 
 <style scoped lang="scss">
@@ -219,15 +244,24 @@
                 line-height: 14px;
                 margin-bottom: 8px;
               }
-              .price-detail {
-                .price {
-                  font-size: 14px;
-                  font-weight: 700;
-                  line-height: 14px;
-                  color: rgb(240, 20, 20);
+              .other-detail-wrapper {
+                display: flex;
+                justify-content: space-between;
+                .price-detail {
+                  position: relative;
+                  .price {
+                    font-size: 14px;
+                    font-weight: 700;
+                    line-height: 14px;
+                    color: rgb(240, 20, 20);
+                  }
+                  .old-price {
+                    text-decoration: line-through;
+                  }
                 }
-                .old-price {
-                  text-decoration: line-through;
+                .add-cart-wrapper {
+                  position: absolute;
+                  right: 18px;
                 }
               }
             }
@@ -238,4 +272,5 @@
 
     }
   }
+
 </style>

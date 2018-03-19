@@ -15,18 +15,20 @@
       </div>
     </div>
     <!--内容区域-->
-    <div class="content">
+    <keep-alive>
       <router-view :seller="seller"></router-view>
-    </div>
-    <!--尾部-->
+    </keep-alive>
     <div class="footer">
-      <!--footer-->
+      <keep-alive>
+        <cart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></cart>
+      </keep-alive>
     </div>
   </div>
 </template>
 
 <script>
   import TheHeader from 'components/TheHeader'
+  import Cart from 'components/Cart'
 
   const ERR_OK = 0
 
@@ -49,7 +51,8 @@
       })
     },
     components: {
-      'the-header': TheHeader
+      'the-header': TheHeader,
+      'cart': Cart
     },
     name: 'App'
   }
@@ -87,5 +90,13 @@
         }
       }
     }
+  }
+
+  .footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62px;
   }
 </style>

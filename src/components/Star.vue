@@ -20,10 +20,10 @@
       }
     },
     computed: {
-      starType () {
+      starType() {
         return 'star-' + this.size
       },
-      classItemList () {
+      classItemList() {
         let result = []
         let score = Math.floor(this.score * 2) / 2
         let hasDecimal = score % 1 !== 0

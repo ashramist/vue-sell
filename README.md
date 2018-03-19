@@ -1,4 +1,4 @@
-# sell
+# vue-sell
 
 > 饿了么demo
 
